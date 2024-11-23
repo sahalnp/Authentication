@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { connectDB,collection } from "./db.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import { update } from "tar";
 
 connectDB();
 dotenv.config();
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 // Route to display the login page
 app.get("/login",async (req, res) => {
-
+  
     if (req.session.user_name) {
         res.redirect("/");
     } else {
@@ -45,6 +46,7 @@ app.post("/login", async (req, res) => {
         password: req.body.password,
     };
     const user = await collection.findOne({ name: loginDetails.name });
+    
     if (!user) {
         return res.render("login", { user_exist: "User does not exist. Please sign up." });
     }
@@ -73,6 +75,7 @@ app.post("/signup", async (req, res) => {
     const data = {
         name: req.body.username,
         password: hashedPassword,
+        email:req.body.email
     };
     const existingUser = await collection.findOne({ name: data.name });
     if (existingUser) {
@@ -128,8 +131,6 @@ app.get("/admin_login", (req, res) => {
 });
 app.post("/admin_login", async (req, res) => { 
     const admin_user = await collection.findOne({ role:1 });
-    console.log(admin_user);
-    
     const password_match = await bcrypt.compare(
         req.body.password,
         admin_user.password
@@ -144,13 +145,50 @@ app.post("/admin_login", async (req, res) => {
     }
 });
 app.get("/Dashboard", async (req, res) => {
-        const results = await collection.find({ admin: { $exists: false } });
-        if (req.session.admin_name) 
-            res.render("dashboard", { user: results });
+        const results = await collection.find({ role:0 });
+        if (req.session.admin_name) {         
+                req.session.result = results; 
+                if(req.session.updated){
+                    const results=req.session.updated;
+                }
+                    res.render("dashboard", { user: results });      
+        }
+        else if (req.session.user_name) {
+            res.redirect('/')
+        }
         else {
             res.redirect("/admin_login");
-        }
+        }     
+       
 });
+app.get('/user/:name', async(req,res)=>{
+    const user= await collection.findOne({name:req.query.button})
+    req.session.USER=user;
+    res.render("user",{user:user})
+    
+})
+app.post('/user/delete', async (req, res) => {     
+    const deletedUser = await collection.findOneAndDelete({ name:req.session.USER.name }); 
+    res.redirect('/Dashboard')
+});
+app.post('/user/:edit',async(req,res)=>{
+    const{name,email}=req.body; 
+    if (!name || !email) {
+        return res.status(400).json({ error: ' name, and email are required' });
+      }
+      const updated = await collection.findOneAndUpdate(
+        { email: req.body.email },
+        { name:req.body.name},
+        { new: true,runValidators: true}
+    );
+      req.session.updated=updated;
+      res.redirect('/Dashboard')
+}) 
+
+// app.get('/search',async(req,res)=>{
+//     console.log(req.body.search);
+//     const search=await collection.findOne({name:req.body.search})
+// })
 app.listen(port, () => {
     console.log(`Server Started on http://localhost:${port}`);
 });
