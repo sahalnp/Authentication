@@ -7,7 +7,6 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
-import { ReturnDocument } from "mongodb";
 
 connectDB();
 dotenv.config();

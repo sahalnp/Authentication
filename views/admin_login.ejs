@@ -1,39 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
-    <!-- Bootstrap CSS from CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center">Admin Login</h2>
-        <form action="/admin_login" method="POST" class="mt-4">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
-            <% if (send ) { %>
-                <div class="alert alert-danger" role="alert">
-                   <%= send %>
-                  </div>
-            <% } %>
-                <p class="mb-0">Don't have an account? <a href="/signup" class="text-black-50 fw-bold">Sign Up</a>
+<%- include('partails/header') %>
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+  
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+  
+    .login-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px 30px;
+      width: 350px;
+    }
+  
+    .login-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .form-group {
+      margin-bottom: 15px;
+    }
+  
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+  
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  
+    .alert {
+      margin-top: 15px;
+      color: #d9534f;
+      text-align: center;
+      font-weight: bold;
+    }
+  
+    .signup-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+  
+    .signup-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+    <div class="login-container">
+        <div class="login-card">
+            <h2>Admin Login</h2>
+            <form action="/admin_login" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <% if (send) { %>
+                <div class="alert">
+                    <%= send %>
+                </div>
+                <% } %>
+                <p class="signup-link">
+                    Don't have an account? <a href="/signup">Sign Up</a>
                 </p>
-              </div>        
-        </form>
+            </form>
+        </div>
     </div>
-
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
